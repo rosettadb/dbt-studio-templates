@@ -1,0 +1,12 @@
+[
+  {
+    "id": "basic-dbt",
+    "label": "Basic dbt Pipeline",
+    "description": "A simple pipeline that installs dependencies and runs dbt tests. A good starting point for a new dbt project.",
+    "badge": "Community",
+    "badgeColor": "info",
+    "steps": ["dbt deps", "dbt test", "teardown"],
+    "fileName": "basic-dbt.yml",
+    "url": "https://raw.githubusercontent.com/rosettadb/dbt-studio-templates/main/pipelines/basic-dbt.yml"
+  }
+]
