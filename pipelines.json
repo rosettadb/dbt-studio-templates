@@ -8,5 +8,15 @@
     "steps": ["dbt deps", "dbt test", "teardown"],
     "fileName": "basic-dbt.yml",
     "url": "https://raw.githubusercontent.com/rosettadb/dbt-studio-templates/main/pipelines/basic-dbt.yml"
+  },
+  {
+    "id": "full-ci-cd",
+    "label": "Full CI/CD",
+    "description": "A complete pipeline with dependency install, model runs, tests, freshness checks, and a deploy notification step.",
+    "badge": "Advanced",
+    "badgeColor": "warning",
+    "steps": ["dbt deps", "dbt run", "dbt test", "dbt source freshness", "deploy"],
+    "fileName": "full-ci-cd.yml",
+    "url": "https://raw.githubusercontent.com/rosettadb/dbt-studio-templates/main/pipelines/full-ci-cd.yml"
   }
 ]
