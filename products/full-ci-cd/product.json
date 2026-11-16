@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 2,
+  "id": "full-ci-cd",
+  "type": "pipeline",
+  "name": "Full CI/CD",
+  "summary": "Dependency install, model runs, tests, source freshness checks and a deploy notification step.",
+  "author": { "name": "RosettaDB", "url": "https://github.com/rosettadb" },
+  "license": "MIT",
+  "tags": ["dbt", "ci-cd"],
+  "source": {
+    "provider": "github",
+    "repo": "rosettadb/dbt-studio-templates",
+    "path": "products/full-ci-cd/pipeline.yml"
+  },
+  "fileName": "full-ci-cd.yml",
+  "steps": ["dbt deps", "dbt run", "dbt test", "dbt source freshness", "deploy"]
+}

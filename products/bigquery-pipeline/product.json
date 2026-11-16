@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 2,
+  "id": "bigquery-pipeline",
+  "type": "project",
+  "name": "BigQuery Pipeline Project",
+  "summary": "Full dbt project for BigQuery: Terraform creates the dataset, Rosetta applies the schema, dbt seeds, runs and tests, then a cleanup job destroys the dataset.",
+  "author": { "name": "RosettaDB", "url": "https://github.com/rosettadb" },
+  "license": "MIT",
+  "tags": ["bigquery", "terraform", "dbt"],
+  "homepage": "https://github.com/rosettadb/bigquery-pipeline-template",
+  "source": {
+    "provider": "github",
+    "repo": "rosettadb/bigquery-pipeline-template",
+    "ref": "7cd8142f2573f25d44d6fc0c5a0ed8aabec871be"
+  },
+  "steps": ["terraform apply", "rosetta apply", "dbt seed", "dbt run", "dbt test", "terraform destroy"]
+}

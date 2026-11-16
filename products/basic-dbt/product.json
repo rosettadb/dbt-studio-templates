@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 2,
+  "id": "basic-dbt",
+  "type": "pipeline",
+  "name": "Basic dbt Pipeline",
+  "summary": "Installs dependencies and runs dbt tests. A good starting point for a new dbt project.",
+  "author": { "name": "RosettaDB", "url": "https://github.com/rosettadb" },
+  "license": "MIT",
+  "tags": ["dbt", "starter"],
+  "source": {
+    "provider": "github",
+    "repo": "rosettadb/dbt-studio-templates",
+    "path": "products/basic-dbt/pipeline.yml"
+  },
+  "fileName": "basic-dbt.yml",
+  "steps": ["dbt deps", "dbt test", "teardown"]
+}

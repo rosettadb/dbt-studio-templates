@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/rosettadb/dbt-studio-templates/main/schema/product.schema.json",
+  "title": "Rosetta Hub product (product.json, schemaVersion 2)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "type", "name", "summary", "license", "source"],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "id": {
+      "description": "Unique and stable; must equal the folder name. Becomes the address /products/<id>.",
+      "type": "string",
+      "pattern": "^[a-z0-9](?:[a-z0-9]|-(?!-)){1,62}[a-z0-9]$",
+      "not": { "enum": ["mine", "facets", "logo", "submit", "new", "edit", "sync", "import"] }
+    },
+    "type": { "enum": ["dataset", "pipeline", "project"] },
+    "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "summary": { "description": "One or two sentences shown on the card.", "type": "string", "minLength": 1, "maxLength": 200 },
+    "description": {
+      "description": "Longer text for the product's page. Leave it out to use README.md from the product's folder.",
+      "type": "string",
+      "maxLength": 20000
+    },
+    "author": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "url": { "type": "string", "pattern": "^https://" }
+      }
+    },
+    "license": {
+      "description": "SPDX identifier, e.g. MIT, Apache-2.0, CC-BY-4.0.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9.+-]{0,63}$"
+    },
+    "tags": {
+      "type": "array",
+      "maxItems": 10,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9+._-]{0,29}$" }
+    },
+    "logo": {
+      "description": "File name of the logo in the product's folder (PNG, JPEG, GIF or WebP, up to 2 MB; no SVG).",
+      "type": "string",
+      "pattern": "^[^/\\\\]+\\.(png|jpe?g|gif|webp)$"
+    },
+    "homepage": { "type": "string", "pattern": "^https://" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider"],
+      "properties": {
+        "provider": { "enum": ["github", "huggingface", "zenodo", "url"] },
+        "url": { "description": "Datasets: the https link of the dataset's public page.", "type": "string", "pattern": "^https://" },
+        "repo": { "description": "Pipelines and projects: \"owner/name\" of a public GitHub repository.", "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9._-]{1,100}$" },
+        "ref": {
+          "description": "Pipelines and projects: the full commit SHA. Leave it out only when the file is in this repository (it is pinned to the commit that is synced).",
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "path": { "description": "Pipelines: path of the pipeline file in the repository.", "type": "string", "pattern": "^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*\\.ya?ml$" }
+      }
+    },
+    "fileName": {
+      "description": "Pipelines: the file name the pipeline is saved as in a project.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}\\.ya?ml$"
+    },
+    "steps": {
+      "description": "Ordered, human-readable step names shown as a preview.",
+      "type": "array",
+      "maxItems": 20,
+      "items": { "type": "string", "minLength": 1, "maxLength": 60 }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "type": { "const": "dataset" } } },
+      "then": {
+        "properties": {
+          "source": { "required": ["provider", "url"], "not": { "anyOf": [{ "required": ["repo"] }, { "required": ["ref"] }, { "required": ["path"] }] } }
+        },
+        "not": { "required": ["fileName"] }
+      }
+    },
+    {
+      "if": { "properties": { "type": { "const": "pipeline" } } },
+      "then": {
+        "required": ["fileName"],
+        "properties": {
+          "source": { "required": ["provider", "repo", "path"], "properties": { "provider": { "const": "github" } }, "not": { "required": ["url"] } }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "type": { "const": "project" } } },
+      "then": {
+        "properties": {
+          "source": {
+            "required": ["provider", "repo"],
+            "properties": { "provider": { "const": "github" } },
+            "not": { "anyOf": [{ "required": ["url"] }, { "required": ["path"] }] }
+          }
+        },
+        "not": { "required": ["fileName"] }
+      }
+    },
+    {
+      "if": { "properties": { "source": { "properties": { "provider": { "const": "huggingface" } } } } },
+      "then": { "properties": { "source": { "properties": { "url": { "pattern": "^https://huggingface\\.co/" } } } } }
+    },
+    {
+      "if": { "properties": { "source": { "properties": { "provider": { "const": "zenodo" } } } } },
+      "then": { "properties": { "source": { "properties": { "url": { "pattern": "^https://zenodo\\.org/" } } } } }
+    }
+  ]
+}
